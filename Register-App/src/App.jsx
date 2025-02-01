@@ -80,25 +80,34 @@ const RegisterApp = () => {
 
   const loadStudents = async () => {
     try {
-      const nextId = await contract.nextId();
-      const loadedStudents = [];
+      if (!contract) return;
       
+      const nextId = await contract.nextId();
+      console.log("Next student ID:", nextId.toString());
+  
+      const loadedStudents = [];
+  
       for (let i = 0; i < nextId; i++) {
         try {
           const [name, age] = await contract.getStudent(i);
-          if (name !== '') {
+          console.log(`Fetched Student ${i}:`, { name, age: age.toString() });
+  
+          if (name.trim() !== "") {
             loadedStudents.push({ id: i, name, age: age.toString() });
           }
         } catch (err) {
           console.error(`Error loading student ${i}:`, err);
         }
       }
-      
+  
+      console.log("Final Student List:", loadedStudents);
       setStudents(loadedStudents);
+      
     } catch (err) {
       toast.error(err.message);
     }
   };
+  
 
   const removeStudent = async (id) => {
     try {
@@ -126,7 +135,7 @@ const RegisterApp = () => {
   return (
     <div className="app-container">
       <div className="app-card">
-        <h1>Student Registration DApp</h1>
+        <h1>EduChain</h1>
         
         <div className="wallet-section">
           {!account ? (
@@ -193,8 +202,11 @@ const RegisterApp = () => {
         </form>
 
         <div className="students-list">
-          <h2>Registered Students</h2>
-          {students.map((student) => (
+        <h2>Registered Students</h2>
+        {students.length === 0 ? (
+          <p className="no-students">No students registered yet.</p>
+        ) : (
+          students.map((student) => (
             <div key={student.id} className="student-card">
               <div className="student-info">
                 <p><strong>ID:</strong> {student.id}</p>
@@ -209,8 +221,10 @@ const RegisterApp = () => {
                 Remove
               </button>
             </div>
-          ))}
-        </div>
+          ))
+        )}
+      </div>
+
       </div>
       <ToastContainer position="top-right" autoClose={5000} />
     </div>
