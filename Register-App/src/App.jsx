@@ -148,7 +148,9 @@ const RegisterApp = () => {
             </button>
           ) : (
             <div className="wallet-info">
-              <span>Connected: {account.slice(0, 6)}...{account.slice(-4)}</span>
+              <div className="wallet-address">
+                {account.slice(0, 6)}...{account.slice(-4)}
+              </div>
               <button 
                 className="disconnect-btn"
                 onClick={disconnectWallet}
